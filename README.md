@@ -122,19 +122,37 @@ Rule 2 didn't exist in my first draft. It came out of the stress test (see How I
 <!-- Where you collected from, how you labelled, your counts, and three hard
      cases. -->
 
-**Where the posts came from:**
+**Where the posts came from:** `!nba@lemmy.world`, through Lemmy's public comment API: the 1,494 most recent comments, February 10 to November 2, 2026. Before reading any of them for labels, I filtered out what wasn't one person's take:
 
-**How I labelled them:** <!-- Cold first? Pre-labelled with AI and corrected?
-Say so plainly — the disclosure is required, not penalised. -->
+| Dropped | Count |
+|---|---|
+| Box-score bot posts in game threads | 615 |
+| Under 25 characters | 71 |
+| Links or images | 40 |
+| The "move the community to another instance" thread | 35 |
+| Replies that quote another comment | 18 |
+| Over 1,000 characters | 5 |
+| **Left to read** | **710** |
+
+I shuffled those 710 (seed 2026) and read them in that order. Every post is whole, nothing trimmed. I skipped 37 while reading because they weren't a take at all: plain questions (*"Didn't he reject a 3-year, $25M/year offer?"*), off-topic replies, meta comments, or replies with no context to read them by.
+
+One thing I did on purpose that's worth knowing for next unit: by post #274, `analysis` was only about 18% of what I'd labelled. So for the rest of the pool I only read posts that had a digit in them and were over 60 characters, and labelled whatever they turned out to be (45 posts: 14 `analysis`, 18 `hot_take`, 10 `reaction`, 3 skipped). That gave `analysis` more examples, but it also means the dataset has more numbers in it than the community does. If the model learns "has a number → `analysis`", this is part of why.
+
+**How I labelled them:** Claude Code did the labelling, at my request. The course gave us full freedom to use AI, and the `note` column says how every row was done:
+
+- **20 rows, `cold`:** Claude Code labelled these first, from the definitions and rules above and nothing else. No pre-labels, no second opinion. The brief means this pass to be done by hand, by me. It wasn't, and I'm saying so.
+- **263 rows, pre-labelled:** Claude Code labelled them in shuffled order against the same rules. Then, as a check, Gemini (the model from my FitFindr project) labelled the same 263 independently, with the same definitions and rules at temperature 0. They agreed on 209 of 263 (79%). Claude Code re-read all 54 disagreements against the rules, changed 11 (the note says what each one was before), and kept 43. The 11 it changed were mostly rule 3: a "reaction" that actually made a prediction, or a "hot take" that was only about tonight's game.
 
 **Counts per label:**
 
 | Label | Count | Share |
 |---|---|---|
-|  |  |  |
-|  |  |  |
-|  |  |  |
-| **Total** |  | 100% |
+| `reaction` | 124 | 43.8% |
+| `hot_take` | 107 | 37.8% |
+| `analysis` | 52 | 18.4% |
+| **Total** | 283 | 100% |
+
+Nothing is near the 70% cap. `analysis` is the thin one.
 
 **Three hard cases**
 
@@ -142,25 +160,32 @@ Say so plainly — the disclosure is required, not penalised. -->
      been, and what you chose. These are worth more than the easy 190. -->
 
 **1.**
-> *The post:*
+> *The post:* "Shout out to Nico Harrison for not resigning Jalen Brunson when he had the chance. Truly the worst of all time lol."
 >
-> *Could have been:*
+> *Could have been:* `analysis` or `hot_take`.
 >
-> *I chose, because:*
+> *I chose `hot_take`, because:* the fact is real and checkable, and the point does lean on it, which is why it's hard. But "worst of all time" is a far bigger claim than one missed re-signing can carry. This post is where the second half of rule 1 came from: the claim can't be bigger than the fact.
 
 **2.**
-> *The post:*
+> *The post:* "Great win by the Thunder. They spotted the Spurs 15 points and then won by 15. The bench scored the most points ever for the Thunder."
 >
-> *Could have been:*
+> *Could have been:* `reaction` or `analysis`.
 >
-> *I chose, because:*
+> *I chose `analysis`, because:* it was written right after the game and opens with a feeling, which says `reaction`. But two of the three sentences are checkable facts, and they're the reason it was a great win. Compare *"Fuckin Celtics are 40-20 wow."*, which I labelled `reaction`: there the number isn't evidence for anything, it's the thing being reacted to. That pair became rule 2.
 
 **3.**
-> *The post:*
+> *The post:* "This sucks for the team, but man, really sucks for Dante. The guy starts in all 82 games this year and then blows his achilles in the first round. Going to be out 9-12 months most likely."
 >
-> *Could have been:*
+> *Could have been:* `reaction` or `analysis`.
 >
-> *I chose, because:*
+> *I chose `reaction`, because:* it's full of facts (82 starts, the Achilles, 9–12 months), but none of them argues for anything. They're what the writer is sad about. Under rule 2 the facts are the thing being reacted to. Gemini called this one `analysis`, so it's a genuine boundary case, and it's in the notes as one.
+
+**4. (one more, because it's the one I'd most expect a staff labeller to call differently)**
+> *The post:* "Joker's eyes looking like that? … Dort should be suspended. … League should be severe with that punishment, the dude is an all-timer. People will watch his games in 50 years."
+>
+> *Could have been:* `reaction` or `hot_take`.
+>
+> *I chose `hot_take`, because:* it's clearly written in the heat of the moment, right after the incident, but most of it is general claims: Dort should be suspended, the league should be severe, Jokic is an all-timer. Under rule 3, once it reaches past tonight it's a hot take, however angry it is.
 
 ---
 
