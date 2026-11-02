@@ -64,34 +64,55 @@ TakeMeter reads a comment from **!nba@lemmy.world**, the NBA community on Lemmy 
      The decision rule is worth a point on its own and it's the thing most
      people leave out. Every taxonomy has a hardest boundary. Name yours. -->
 
-### `label_one`
+### `analysis`
 
-**Definition:**
-
-**Example 1:**
->
-
-**Example 2:**
->
-
-### `label_two`
-
-**Definition:**
+**Definition:** Makes a point about basketball that rests on a specific fact you could look up (a stat, a score or record, a contract figure, a date, a draft pick, a rule, or a named play or matchup), so that taking the fact out makes the point fall apart.
 
 **Example 1:**
->
+> KD Rockets: 45-29 / Brooks Rockets: 52-30 / KD Suns: 36-46 / Brooks Suns: 41-33 / The teams with KD on them have a worse record than the teams with Brooks.
 
 **Example 2:**
->
+> The C's only saved like 3mil in that trade though, which makes me think it wasn't just money? Brown - $57,078,728 George - $54,126,380
+
+### `hot_take`
+
+**Definition:** A confident claim about a player, team, coach or the league, predictions included, with nothing checkable holding it up. It might be right. It isn't argued.
+
+**Example 1:**
+> no chance. Portland just don't got talent.
+
+**Example 2:**
+> Knicks in 7. It's probably the last time a Wemby team is going to beatable for a long time.
+
+### `reaction`
+
+**Definition:** The writer responding to something that just happened (a game, a play, an injury, a trade, a ruling) with how it made them feel, not with a claim that reaches past it.
+
+**Example 1:**
+> WOW WOW WOW! How did that happen??? Magic had a HUGE lead at the half.
+
+**Example 2:**
+> Oh no, Brunson hurt his knee! Bad news.
 
 ### The hardest boundary
 
-**Which two labels:**
+**Which two labels:** `analysis` vs `hot_take`. NBA comments throw facts around constantly, and most of the time the fact is there to make an opinion sound settled, not to argue it. The post that made me write the rule:
+
+> Shout out to Nico Harrison for not resigning Jalen Brunson when he had the chance. Truly the worst of all time lol.
+
+There's a real, checkable fact in it (Dallas didn't re-sign Brunson), and the claim does lean on it. But "worst of all time" is a lot more than one fact can carry.
 
 **The decision rule I used every time:**
-<!-- e.g. "If the post names a specific checkable fact, it's `analysis`, even
-     if the tone is heated." -->
 
+**Cover the fact with your thumb.** If the point still stands just as loudly without it, the fact was decoration and the post is `hot_take`. If the point falls apart, it's `analysis`. Two checks on the fact itself: it has to be specific enough to look up (*"22% from three in the second round"* and *"0-2 vs the Spurs"* count; *"historic triple-doubles every night"* and *"feasted on the boards"* don't), and the claim can't be bigger than the fact can carry. One fact under "worst of all time" is a `hot_take` with a fact in it. So the Nico Harrison post is `hot_take`.
+
+**Three more rules for the other boundaries**, because they came up as soon as I started labelling:
+
+2. **`reaction` vs `analysis`:** if the number is the thing being reacted to (*"Fuckin Celtics are 40-20 wow."*), it's `reaction`. If the number is evidence for a claim (*"They spotted the Spurs 15 points and then won by 15"*, offered as why it was a great win), it's `analysis`. Being written mid-game doesn't make it a reaction: *"I counted 5 lobs to Wemby in 1st half so far. they need to do that more."* is `analysis`.
+3. **`reaction` vs `hot_take`:** a verdict about tonight's game only (*"LaMello was ass this game."*) is `reaction`. Once the claim reaches past tonight to the series, the season, the player in general or a prediction, it's `hot_take`.
+4. **Still two labels?** Pick the one the post spends most of its words on. That's a tie-break, only after 1–3.
+
+Rule 2 didn't exist in my first draft. It came out of the stress test (see How I Used AI).
 
 
 ---
