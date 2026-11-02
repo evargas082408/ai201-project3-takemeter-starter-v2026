@@ -42,6 +42,16 @@
 <!-- Your community, and what your classifier sorts posts into. Three or four
      sentences. -->
 
+TakeMeter reads a comment from **!nba@lemmy.world**, the NBA community on Lemmy (a public, Reddit-style forum anyone can read without an account), and sorts it into one of three kinds: `analysis` (a point that rests on something you could look up), `hot_take` (a confident claim with nothing checkable behind it) or `reaction` (how the writer feels about something that just happened). It's DistilBERT fine-tuned on comments I collected and labelled from that community. The point is the thing regulars do without thinking: telling the comment worth reading from the one that's just loud.
+
+**Why this community:** I went for r/nba first, since that's where these conversations happen, but Reddit now blocks scripted reads (every request came back `403`), and copy-pasting 200 posts by hand wasn't the point. Lemmy's NBA community is the same conversation, with game threads, trade news and playoff arguments, and it has a public API. It isn't built around one show or release, so nothing in it is a spoiler.
+
+**What I noticed reading it (Milestone 1):** I read about 85 comments from February–November 2026 before deciding anything. Four distinctions I could actually point at:
+
+1. **Some cite a number you could check, and most don't.** A contract figure (*"Brown - $57,078,728 / George - $54,126,380"*), a draft pick year, a box-score line, a list of dates. When a comment has one, the whole comment is usually built on it.
+2. **A lot of game-thread comments are about the game that's on right now**, and they're short and present tense: *"What a great game. Crazy the Knicks held on to win."* There's no claim in them that reaches past tonight.
+3. **The rest of the opinionated ones make a claim about a player or team in general and stop there**: *"Bus rider, always has been."* Confident, sometimes funny, never argued.
+4. **A big share isn't a take on basketball at all.** Of the 1,494 comments I fetched, 615 were the bot that posts box scores in game threads, 35 were a thread about moving the community to another instance, and plenty of what's left is plain questions (*"Didn't he reject a 3-year, $25M/year offer?"*). Those don't fit any label, so I left them out (see The Dataset for the exact rules).
 
 
 ---
