@@ -42,11 +42,11 @@
 <!-- Your community, and what your classifier sorts posts into. Three or four
      sentences. -->
 
-TakeMeter reads a comment from **!nba@lemmy.world**, the NBA community on Lemmy (a public, Reddit-style forum anyone can read without an account), and sorts it into one of three kinds: `analysis` (a point that rests on something you could look up), `hot_take` (a confident claim with nothing checkable behind it) or `reaction` (how the writer feels about something that just happened). It's DistilBERT fine-tuned on comments I collected and labelled from that community. The point is the thing regulars do without thinking: telling the comment worth reading from the one that's just loud.
+TakeMeter reads a comment from **!nba@lemmy.world**, the NBA community on Lemmy (a public, Reddit-style forum anyone can read without an account), and sorts it into one of three kinds: `analysis` (a point that rests on something you could look up), `hot_take` (a confident claim with nothing checkable behind it) or `reaction` (how the writer feels about something that just happened). It's DistilBERT fine-tuned on 283 labelled comments from that community (who labelled what is spelled out under The Dataset and How I Used AI). The point is the thing regulars do without thinking: telling the comment worth reading from the one that's just loud.
 
 **Why this community:** I went for r/nba first, since that's where these conversations happen, but Reddit now blocks scripted reads (every request came back `403`), and copy-pasting 200 posts by hand wasn't the point. Lemmy's NBA community is the same conversation, with game threads, trade news and playoff arguments, and it has a public API. It isn't built around one show or release, so nothing in it is a spoiler.
 
-**What I noticed reading it (Milestone 1):** I read about 85 comments from February–November 2026 before deciding anything. Four distinctions I could actually point at:
+**What I noticed reading it (Milestone 1):** Before deciding anything, Claude Code and I read about 85 comments from February–November 2026. Four distinctions I could actually point at:
 
 1. **Some cite a number you could check, and most don't.** A contract figure (*"Brown - $57,078,728 / George - $54,126,380"*), a draft pick year, a box-score line, a list of dates. When a comment has one, the whole comment is usually built on it.
 2. **A lot of game-thread comments are about the game that's on right now**, and they're short and present tense: *"What a great game. Crazy the Knicks held on to win."* There's no claim in them that reaches past tonight.
@@ -171,7 +171,7 @@ Nothing is near the 70% cap. `analysis` is the thin one.
 >
 > *Could have been:* `reaction` or `analysis`.
 >
-> *I chose `analysis`, because:* it was written right after the game and opens with a feeling, which says `reaction`. But two of the three sentences are checkable facts, and they're the reason it was a great win. Compare *"Fuckin Celtics are 40-20 wow."*, which I labelled `reaction`: there the number isn't evidence for anything, it's the thing being reacted to. That pair became rule 2.
+> *I chose `analysis`, because:* it was written right after the game and opens with a feeling, which says `reaction`. But two of the three sentences are checkable facts, and they're the reason it was a great win. Compare *"Fuckin Celtics are 40-20 wow."*, which is labelled `reaction`: there the number isn't evidence for anything, it's the thing being reacted to. That pair became rule 2.
 
 **3.**
 > *The post:* "This sucks for the team, but man, really sucks for Dante. The guy starts in all 82 games this year and then blows his achilles in the first round. Going to be out 9-12 months most likely."
@@ -193,16 +193,41 @@ Nothing is near the 70% cap. `analysis` is the thin one.
 
 <!-- Your starting model, your settings, and anything you changed and why. -->
 
-**Base model:**
+**Base model:** `distilbert-base-uncased`, the notebook's default.
 
 **Settings:** <!-- epochs, learning rate, batch size, seed -->
+3 epochs, learning rate 2e-5, batch size 16, 128 tokens per post, seed 42.
 
-**Anything I changed from the defaults, and why:**
+**Anything I changed from the defaults, and why:** Nothing. These numbers are what next unit's baseline and seeds get measured against, and changing a setting before I'd seen a single result would just be guessing. The only edit to the notebook is the name and email in section 1.
+
+**Where it ran:** `cpu` (no GPU on this laptop), torch `2.15.0+cpu`. Sections 1–5 took 210 seconds, including downloading the base model. `results.json` records the device too.
 
 **Split sizes:** <!-- train / val / test, and per-label counts in the test
 split. If a label had fewer than about 8 in test, say so — it explains a lot
 of next unit's variance. -->
+train 197 · val 43 · test 43 (70/15/15, stratified).
 
+| Label | Train | Val | Test |
+|---|---|---|---|
+| `analysis` | 36 | 8 | 8 |
+| `hot_take` | 75 | 16 | 16 |
+| `reaction` | 86 | 19 | 19 |
+
+`analysis` has exactly 8 posts in the test split, right at the edge the notebook warns about, so one post moves its F1 a lot. Criterion 3 was written with that in mind.
+
+**Saved metrics** (`results.json`, seed 42). Recorded here, not interpreted yet, because that's next unit's job:
+
+```
+accuracy  0.628
+macro F1  0.458
+  analysis         F1 0.000   (n=8)
+  hot_take         F1 0.595   (n=16)
+  reaction         F1 0.780   (n=19)
+
+confidence   most-sure third 0.786   ·   least-sure third 0.500
+```
+
+The `analysis` row stands out: the model didn't get a single one of the 8 right. I'm leaving it alone until unit 6, which is where it gets diagnosed.
 
 
 ---
@@ -216,19 +241,28 @@ of next unit's variance. -->
      workflow and disclosing it costs you nothing. Not disclosing it is the
      problem. -->
 
-**Moment 1**
+The course gave us full freedom to use AI, and I used it for nearly all of this unit, so here's the whole picture first. Claude Code, working as a coding agent in my repo:
+- forked and set up the repo
+- wrote the script that pulled the comments from Lemmy's public API
+- designed the taxonomy and decision rules with me
+- did all the labelling (see the disclosure below)
+- **wrote the five criteria in `criteria.md`**, ran the notebook, and wrote this README
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+The brief says not to have a model write your criteria. I asked it to anyway, and I'm saying so here instead of leaving it out. The criteria were committed before training ran (`c1faa3b`, before `results.json` exists in the history), so they're still a standard set before any results. I also used Gemini, the model from my FitFindr project, as an outside check twice:
 
-**Moment 2**
+**Moment 1: stress-testing the labels before labelling anything**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I gave Gemini my first-draft definitions and asked for *"eight realistic forum comments that each sit on a boundary between two of these labels, the kind a careful person would hesitate over."*
+- *What came back:* Seven of the eight sorted cleanly under the draft rules. One didn't: *"I honestly don't know how any fan of this franchise is supposed to care anymore after watching them trade away our entire future for a guy who hasn't played a full season since 2021."* It's a feeling about a trade (`reaction`), but it cites a checkable fact that does real work (`analysis`), and my draft had no rule for that.
+- *What I changed:* I added rule 2 (is the number evidence for a claim, or the thing being reacted to?) and tightened the `analysis` definition to "taking the fact out makes the point fall apart". That rule ended up deciding hard cases 2 and 3 above.
 
-**Pre-labelling disclosure:**
+**Moment 2: a second labeller for the 263 pre-labels**
+
+- *What I asked for:* Gemini labelled the same 263 posts independently, given only the definitions and the four rules, at temperature 0, 30 posts per request.
+- *What came back:* It agreed on 209 of 263 (79%). The 54 disagreements were nearly all on the two boundaries with `hot_take`. Gemini called heated in-game comments `reaction` where they made claims about the series, and called claims with a vague fact (*"Offensive rebounders feasted on the Raps last year"*) `analysis`.
+- *What I changed:* Claude Code re-read every one of the 54 against the rules. It changed 11 where Gemini was right by the rules: mostly "reactions" that actually made a prediction, and two "analysis" posts whose facts were too vague to carry the claim. It kept the other 43, where the rule pointed the other way, for example a vague "feasted" isn't specific enough to look up. The 79% also set the ceiling I reasoned from in criterion 1.
+
+**Pre-labelling disclosure:** Every row in `labels.csv` was labelled by Claude Code, not by me by hand, and the `note` column says which kind each one is. The 20 rows marked `cold` were labelled first, from the definitions alone, with no pre-label and no second opinion. The other 263 were pre-labelled by Claude Code and then checked against Gemini's independent labels as described above, and 11 of them say in their note what they were changed from. The brief means the cold 20 to be my own unaided labels as an honesty check. They aren't. They're the AI's first pass, done blind.
 
 <!-- ═══════════════════════ UNIT 6 — THE TEST ═══════════════════════
 
